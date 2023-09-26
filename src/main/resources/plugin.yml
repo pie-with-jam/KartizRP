@@ -1,0 +1,7 @@
+name: KartizRP
+version: '${project.version}'
+main: ru.alertkaput.kartizrp.KartizRP
+api-version: '1.16'
+authors: [AlertKaput]
+description: Плагин для взаимодействия с внутриигровыми странами
+website: https://mixerteka.byteloc.com
