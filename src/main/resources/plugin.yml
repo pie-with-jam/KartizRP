@@ -5,3 +5,7 @@ api-version: '1.16'
 authors: [AlertKaput]
 description: Плагин для взаимодействия с внутриигровыми странами
 website: https://mixerteka.byteloc.com
+commands:
+  country:
+    description: Ваше описание
+    usage: /country
