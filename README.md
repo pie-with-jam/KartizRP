@@ -72,9 +72,3 @@ Distributed under the MIT License. See [LICENSE](https://github.com/pie-with-jam
 ## Authors
 
 * **Pie-with-jam** - ** - [Pie-with-jam](https://github.com/pie-with-jam) - *Автор*
-
-## Acknowledgements
-
-* [ShaanCoding](https://github.com/ShaanCoding/)
-* [Othneil Drew](https://github.com/othneildrew/Best-README-Template)
-* [ImgShields](https://shields.io/)
