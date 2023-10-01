@@ -1,4 +1,4 @@
-name: KartizRP
+name: NationForge
 version: '${project.version}'
 main: ru.alertkaput.kartizrp.KartizRP
 api-version: '1.16'

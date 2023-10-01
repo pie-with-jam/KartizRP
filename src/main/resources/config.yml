@@ -1,0 +1,5 @@
+messages:
+  usage: "Используйте: /country create <Название>"
+  country_created: "Поздравляем! Вы создали страну: %country%"
+  country_exists: "У вас уже есть страна!"
+  country_name_length: "Название страны не должно превышать 24 символа!"
