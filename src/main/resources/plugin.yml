@@ -1,0 +1,25 @@
+name: NationsForge
+main: ru.AlertKaput.nationsForge.NationsForge
+version: 1.0
+api-version: 1.20
+softdepend: [PlaceholderAPI]
+commands:
+  country:
+    description: Opens the country selection menu
+  c:
+    description: Opens the country selection menu
+  mycountry:
+    description: Opens the country selection menu
+  myc:
+    description: Opens the country selection menu
+  created:
+    description: hello
+  setgender:
+    description: "Set player gender"
+    usage: "/setgender <male/female>"
+  setage:
+    description: "Set player age"
+    usage: "/setage <age group>"
+  join:
+    description: "Join to country"
+    usage: "/join"
