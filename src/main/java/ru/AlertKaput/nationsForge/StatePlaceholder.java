@@ -42,8 +42,6 @@ public class StatePlaceholder extends PlaceholderExpansion {
                 return "No State";  // Если база данных не загружена
             }
 
-            plugin.getLogger().info("Checking state for player: " + player.getName());
-
             for (String key : database.keySet()) {
                 JsonObject stateData = database.getAsJsonObject(key);
 

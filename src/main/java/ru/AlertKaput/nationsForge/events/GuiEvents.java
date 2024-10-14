@@ -156,33 +156,55 @@ public class GuiEvents implements Listener {
             if (event.isLeftClick()) {
                 int slot = event.getSlot();
                 JsonObject database = DataUtils.loadDatabase(NationsForge.getDatabaseFile());
-                int currentPage = playerPages.getOrDefault(player, 0);
+                String playerName = player.getName();
 
-                if (clickedItem.getType() == Material.GREEN_STAINED_GLASS_PANE && slot == 13) {
+                // Если нажата панелька для закрытия (slot == 14)
+                if (slot == 14) {
                     for (String key : database.keySet()) {
                         JsonObject stateData = database.getAsJsonObject(key);
 
-                        // Проверяем, есть ли ключ "join", если нет, добавляем его со значением "open" по умолчанию
-                        if (!stateData.has("join")) {
-                            stateData.addProperty("join", "open");
-                        }
+                        // Проверяем, является ли игрок правителем страны
+                        if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
+                            // Проверяем текущее состояние join
+                            if (stateData.has("join") && stateData.get("join").getAsString().equals("open")) {
+                                // Меняем значение join на закрытое
+                                stateData.addProperty("join", "close");
 
-                        // Проверяем, что значение "join" равно "open"
-                        if (stateData.get("join").getAsString().equals("open")) {
-                            // Меняем значение "join" на "close"
-                            stateData.addProperty("join", "close");
-
-                            // Сохраняем обновленную базу данных
-                            DataUtils.saveDatabase(NationsForge.getDatabaseFile(), database);
-
-                            player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.GREEN + " изменён на закрытый!");
-                            return;
+                                // Сохраняем обновленную базу данных
+                                DataUtils.saveDatabase(NationsForge.getDatabaseFile(), database);
+                                player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.GREEN + " изменён на закрытый!");
+                                return;
+                            } else {
+                                player.sendMessage(ChatColor.RED + "Статус уже закрыт!");
+                                return; // Если уже закрыто, не делаем ничего
+                            }
                         }
                     }
-                    return;
                 }
 
-                // Проверка, является ли игрок правителем или членом другой страны
+                // Если нажата панелька для открытия (slot == 13)
+                if (slot == 13) {
+                    for (String key : database.keySet()) {
+                        JsonObject stateData = database.getAsJsonObject(key);
+
+                        // Проверяем, является ли игрок правителем страны
+                        if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
+                            // Проверяем текущее состояние join
+                            if (stateData.has("join") && stateData.get("join").getAsString().equals("close")) {
+                                // Меняем значение join на открытое
+                                stateData.addProperty("join", "open");
+
+                                // Сохраняем обновленную базу данных
+                                DataUtils.saveDatabase(NationsForge.getDatabaseFile(), database);
+                                player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.GREEN + " изменён на открытый!");
+                                return;
+                            } else {
+                                player.sendMessage(ChatColor.RED + "Статус уже открыт!");
+                                return; // Если уже открыто, не делаем ничего
+                            }
+                        }
+                    }
+                }
             }
         }
     }

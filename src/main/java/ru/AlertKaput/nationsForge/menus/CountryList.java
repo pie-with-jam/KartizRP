@@ -73,6 +73,11 @@ public class CountryList {
             String key = countryNames.get(i);
             JsonObject stateData = database.getAsJsonObject(key);
 
+            String joinStatus = stateData.get("join").getAsString();
+            if (joinStatus.equals("close")) {
+                continue; // Skip countries with 'join' set to 'close'
+            }
+
             // Получение правителя страны и проверка онлайн-статуса
             String ruler = stateData.get("ruler").getAsString();
             Player rulerPlayer = Bukkit.getPlayerExact(ruler);
