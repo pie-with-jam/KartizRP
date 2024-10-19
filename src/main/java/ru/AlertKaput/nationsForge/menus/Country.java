@@ -1,5 +1,7 @@
 package ru.AlertKaput.nationsForge.menus;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -49,9 +51,6 @@ public class Country {
         menu.addItem(12, Material.LEGACY_EMPTY_MAP, whiteColor + "Список государств",
                 Arrays.asList(beforeColor + "| Там можно выбрать страну для игры"));
 
-        // Тотем бессмертия с названием "Ваше государство"
-        menu.addItem(13, Material.TOTEM_OF_UNDYING, whiteColor + "Ваше государство");
-
         // Информация о персонаже из persons.json
         String gender = "Не указано";
         String nationality = "Не указано";
@@ -90,12 +89,27 @@ public class Country {
 
         // Роль в государстве из database.json
         String roleInState = "Безработный";  // Начальное значение "безработный"
+        boolean hasState = false;
+        String stateName = "Ваше государство";
+
         for (String key : database.keySet()) {
             JsonObject stateData = database.getAsJsonObject(key);
             if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
                 // Если игрок — лидер, присваиваем ему титул
                 roleInState = stateData.has("leaderTitle") ? stateData.get("leaderTitle").getAsString() : "Правитель";
+                hasState = true;
+                stateName = stateData.get("name").getAsString();
                 break;
+            } else if (stateData.has("members")) {
+                JsonArray membersArray = stateData.getAsJsonArray("members");
+                for (JsonElement member : membersArray) {
+                    if (member.getAsString().equals(playerName)) {
+                        // Если игрок — член государства
+                        hasState = true;
+                        stateName = stateData.get("name").getAsString();
+                        break;
+                    }
+                }
             }
         }
 
@@ -109,16 +123,18 @@ public class Country {
                 )
         );
 
-        // Проверяем, является ли игрок членом государства
-        boolean hasState = false;
-        for (String key : database.keySet()) {
-            JsonObject stateData = database.getAsJsonObject(key);
-            if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
-                hasState = true;
-                break;
-            }
+        // Добавляем информацию о государстве
+        if (hasState) {
+            menu.addItem(13, Material.TOTEM_OF_UNDYING, whiteColor + stateName);
+        } else {
+            menu.addItem(13, Material.TOTEM_OF_UNDYING, whiteColor + "Ваше государство",
+                    Arrays.asList(
+                            beforeColor + "| Нужно создать или вступить в страну"
+                    )
+            );
         }
 
+        // Проверяем, является ли игрок членом государства
         if (hasState) {
             menu.addItem(22, Material.NETHER_STAR, whiteColor + "Основать свою страну",
                     List.of(

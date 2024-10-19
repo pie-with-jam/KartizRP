@@ -37,6 +37,11 @@ public class GuiEvents implements Listener {
         // Логика меню с ID 1
         if (menuId.equals("1")) {
             event.setCancelled(true);
+            if (clickedItem.getType() == Material.TOTEM_OF_UNDYING) {
+                player.closeInventory();
+                MyCountry menu = new MyCountry();
+                menu.openMenu(player);
+            }
             if (clickedItem.getType() == Material.MAP && clickedItem.getData().getData() == 0) {
                 // Открываем меню "Country"
                 CountryList menu = new CountryList();
