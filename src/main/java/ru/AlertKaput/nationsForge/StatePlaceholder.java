@@ -48,10 +48,10 @@ public class StatePlaceholder extends PlaceholderExpansion {
                 // Проверяем правителя
                 if (stateData.has("ruler")) {
                     String ruler = stateData.get("ruler").getAsString();
-                    plugin.getLogger().info("Checking ruler: " + ruler);
+                    //plugin.getLogger().info("Checking ruler: " + ruler);
 
                     if (ruler.equalsIgnoreCase(player.getName())) {
-                        plugin.getLogger().info(player.getName() + " is the ruler of " + stateData.get("name").getAsString());
+                        //plugin.getLogger().info(player.getName() + " is the ruler of " + stateData.get("name").getAsString());
                         return stateData.get("name").getAsString();
                     }
                 }
@@ -62,10 +62,10 @@ public class StatePlaceholder extends PlaceholderExpansion {
 
                     for (int i = 0; i < members.size(); i++) {
                         String memberName = members.get(i).getAsString();
-                        plugin.getLogger().info("Checking member: " + memberName);
+                        //plugin.getLogger().info("Checking member: " + memberName);
 
                         if (memberName.equalsIgnoreCase(player.getName())) {
-                            plugin.getLogger().info(player.getName() + " is a member of " + stateData.get("name").getAsString());
+                            //plugin.getLogger().info(player.getName() + " is a member of " + stateData.get("name").getAsString());
                             return stateData.get("name").getAsString();  // Возвращаем название страны
                         }
                     }

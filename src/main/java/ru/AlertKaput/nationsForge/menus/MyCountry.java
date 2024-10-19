@@ -1,10 +1,13 @@
 package ru.AlertKaput.nationsForge.menus;
 
+import com.google.gson.JsonObject;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.AlertKaput.nationsForge.NationsForge;
 import ru.AlertKaput.nationsForge.commands.CountryCommand;
+import ru.AlertKaput.nationsForge.utils.DataUtils;
 import ru.AlertKaput.nationsForge.utils.MenuBuilder;
 import ru.AlertKaput.nationsForge.utils.ColorUtils;
 
@@ -37,7 +40,7 @@ public class MyCountry {
         MenuBuilder menu = new MenuBuilder("3", "lorem ipsum", 6, NationsForge.getInstance());
 
         // Серые стеклянные панели
-        int[] grayPaneSlots = {1,9,10,11,15,16,17,18,22,27,31,36,40,45,49,50,51,52,53};
+        int[] grayPaneSlots = {1,9,10,11,12,14,15,16,17,18,22,27,31,36,40,45,49,50,51,52,53};
         for (int slot : grayPaneSlots) {
             menu.addItem(slot, Material.GRAY_STAINED_GLASS_PANE, " ");
         }
@@ -90,26 +93,41 @@ public class MyCountry {
                         afterColor + "ПКМ - Изменить национальный девиз"
                 ));
 
-        menu.addItem(12, Material.BLUE_STAINED_GLASS_PANE, turquoise + "Для въезда нужно разрешение",
-                Arrays.asList(
-                        beforeColor + "| В вашу страну можно въехать оставив заявку",
-                        afterColor + "ЛКМ - Сделать страну открытой для въезда",
-                        afterColor + "ПКМ - Сделать страну закрытой для въезда"
-                ));
+        JsonObject database = DataUtils.loadDatabase(NationsForge.getDatabaseFile());
+        for (String key : database.keySet()) {
+            JsonObject stateData = database.getAsJsonObject(key);
+            String playerName = player.getName();
 
-        menu.addItem(13, Material.GREEN_STAINED_GLASS_PANE, turquoise + "Открыта для въезда",
-                Arrays.asList(
-                        beforeColor + "| В вашей стране может поселиться кто желает",
-                        afterColor + "ПКМ - Сделать страну закрытой для въезда",
-                        afterColor + "СКМ - Сделать въезд по заявкам"
-                ));
+            // Проверяем, является ли игрок правителем страны
+            if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
+                // Проверяем текущее состояние join
+                String currentJoinStatus = stateData.has("join") ? stateData.get("join").getAsString() : "open";
 
-        menu.addItem(14, Material.RED_STAINED_GLASS_PANE, darkRed + "Въезд в страну закрыт",
-                Arrays.asList(
-                        beforeColor + "| В вашу страну нельзя въехать",
-                        afterColor + "ЛКМ - Сделать страну открытой для въезда",
-                        afterColor + "СКМ - Сделать въезд по заявкам"
-                ));
+                if (currentJoinStatus.equals("close")) {
+                    // Меняем значение join на открытое
+                    menu.addItem(13, Material.RED_STAINED_GLASS_PANE, darkRed + "Въезд в страну закрыт",
+                            Arrays.asList(
+                                    beforeColor + "| В вашу страну нельзя въехать",
+                                    afterColor + "ЛКМ - Сделать страну открытой для въезда",
+                                    afterColor + "СКМ - Сделать въезд по заявкам"
+                            ));
+                } else if (currentJoinStatus.equals("open")) {
+                    menu.addItem(13, Material.LIME_STAINED_GLASS_PANE, ChatColor.GREEN + "Открыта для въезда",
+                            Arrays.asList(
+                                    beforeColor + "| В вашей стране может поселиться кто желает",
+                                    afterColor + "ПКМ - Сделать страну закрытой для въезда",
+                                    afterColor + "СКМ - Сделать въезд по заявкам"
+                            ));
+                } else if (currentJoinStatus.equals("invites")) {
+                    menu.addItem(13, Material.BLUE_STAINED_GLASS_PANE, ChatColor.BLUE + "Для въезда нужно разрешение",
+                            Arrays.asList(
+                                    beforeColor + "| В вашу страну можно въехать оставив заявку",
+                                    afterColor + "ЛКМ - Сделать страну открытой для въезда",
+                                    afterColor + "ПКМ - Сделать страну закрытой для въезда"
+                            ));
+                }
+            }
+        }
 
         menu.addItem(46, Material.RED_STAINED_GLASS_PANE, Yesterday1Color + "Покинуть страну",
                 Arrays.asList(

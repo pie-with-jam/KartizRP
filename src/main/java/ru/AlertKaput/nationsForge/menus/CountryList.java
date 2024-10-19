@@ -78,6 +78,10 @@ public class CountryList {
                 continue; // Skip countries with 'join' set to 'close'
             }
 
+            if (joinStatus.equals("invites"))  {
+                continue; // Skip countries with 'join' set to 'close'
+            }
+
             // Получение правителя страны и проверка онлайн-статуса
             String ruler = stateData.get("ruler").getAsString();
             Player rulerPlayer = Bukkit.getPlayerExact(ruler);

@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.AlertKaput.nationsForge.NationsForge;
 import ru.AlertKaput.nationsForge.menus.CountryList;
+import ru.AlertKaput.nationsForge.menus.MyCountry;
 import ru.AlertKaput.nationsForge.utils.DataUtils;
 import ru.AlertKaput.nationsForge.utils.MenuBuilder;
 import ru.AlertKaput.nationsForge.utils.StateRegistration;
@@ -153,56 +154,46 @@ public class GuiEvents implements Listener {
 
         if (menuId.equals("3")) {
             event.setCancelled(true);
-            if (event.isLeftClick()) {
-                int slot = event.getSlot();
-                JsonObject database = DataUtils.loadDatabase(NationsForge.getDatabaseFile());
-                String playerName = player.getName();
+            int slot = event.getSlot();
+            JsonObject database = DataUtils.loadDatabase(NationsForge.getDatabaseFile());
+            String playerName = player.getName();
 
-                // Если нажата панелька для закрытия (slot == 14)
-                if (slot == 14) {
-                    for (String key : database.keySet()) {
-                        JsonObject stateData = database.getAsJsonObject(key);
+            // Если нажата панелька для изменения статуса (slot == 13)
+            if (slot == 13) {
+                for (String key : database.keySet()) {
+                    JsonObject stateData = database.getAsJsonObject(key);
 
-                        // Проверяем, является ли игрок правителем страны
-                        if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
-                            // Проверяем текущее состояние join
-                            if (stateData.has("join") && stateData.get("join").getAsString().equals("open")) {
-                                // Меняем значение join на закрытое
-                                stateData.addProperty("join", "close");
+                    // Проверяем, является ли игрок правителем страны
+                    if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
+                        String currentJoinStatus = stateData.has("join") ? stateData.get("join").getAsString() : "open";
 
-                                // Сохраняем обновленную базу данных
-                                DataUtils.saveDatabase(NationsForge.getDatabaseFile(), database);
-                                player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.GREEN + " изменён на закрытый!");
-                                return;
-                            } else {
-                                player.sendMessage(ChatColor.RED + "Статус уже закрыт!");
-                                return; // Если уже закрыто, не делаем ничего
-                            }
-                        }
-                    }
-                }
-
-                // Если нажата панелька для открытия (slot == 13)
-                if (slot == 13) {
-                    for (String key : database.keySet()) {
-                        JsonObject stateData = database.getAsJsonObject(key);
-
-                        // Проверяем, является ли игрок правителем страны
-                        if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
-                            // Проверяем текущее состояние join
-                            if (stateData.has("join") && stateData.get("join").getAsString().equals("close")) {
-                                // Меняем значение join на открытое
+                        if (event.isLeftClick()) {
+                            if (currentJoinStatus.equals("close")) {
                                 stateData.addProperty("join", "open");
-
-                                // Сохраняем обновленную базу данных
-                                DataUtils.saveDatabase(NationsForge.getDatabaseFile(), database);
                                 player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.GREEN + " изменён на открытый!");
-                                return;
-                            } else {
-                                player.sendMessage(ChatColor.RED + "Статус уже открыт!");
-                                return; // Если уже открыто, не делаем ничего
+                            } else if (currentJoinStatus.equals("invites")) {
+                                stateData.addProperty("join", "open");
+                                player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.GREEN + " изменён на открытый!");
                             }
+                        } else if (event.isRightClick()) {
+                            if (currentJoinStatus.equals("open")) {
+                                stateData.addProperty("join", "close");
+                                player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.RED + " изменён на закрытый!");
+                            } else if (currentJoinStatus.equals("invites")) {
+                                stateData.addProperty("join", "close");
+                                player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.RED + " изменён на закрытый!");
+                            }
+                        } else if (event.getClick().isMouseClick()) {
+                            stateData.addProperty("join", "invites");
+                            player.sendMessage(ChatColor.GREEN + "Статус вступления в страну " + ChatColor.AQUA + stateData.get("name").getAsString() + ChatColor.YELLOW + " изменён на по заявкам!");
                         }
+
+                        DataUtils.saveDatabase(NationsForge.getDatabaseFile(), database);
+
+                        player.closeInventory();
+                        MyCountry menu = new MyCountry();
+                        menu.openMenu(player);
+                        return;
                     }
                 }
             }
