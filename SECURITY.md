@@ -50,7 +50,7 @@
 
 ### Лицензия
 
-Этот проект распространяется под лицензией MIT. Подробнее см. [LICENSE](https://github.com/pie-with-jam/NationForge/blob/master/LICENSE.md).
+Этот проект распространяется под лицензией MIT. Подробнее см. [LICENSE](https://github.com/pie-with-jam/NationForge/blob/master/LICENSE).
 
 ---
 
