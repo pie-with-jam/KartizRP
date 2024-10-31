@@ -12,8 +12,6 @@ commands:
     description: Opens the country selection menu
   myc:
     description: Opens the country selection menu
-  created:
-    description: hello
   setgender:
     description: "Set player gender"
     usage: "/setgender <male/female>"

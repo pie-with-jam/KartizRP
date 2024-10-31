@@ -76,7 +76,6 @@ public final class NationsForge extends JavaPlugin {
         this.getCommand("join").setExecutor(new JoinCommand());
         this.getCommand("setgender").setExecutor(new SetGenderAgeCommand(playerJoin));
         this.getCommand("setage").setExecutor(new SetGenderAgeCommand(playerJoin));
-        this.getCommand("created").setExecutor(new CreateStateCommand());
         this.getCommand("country").setExecutor(new CountryCommand());
         this.getCommand("c").setExecutor(new CountryCommand());
 

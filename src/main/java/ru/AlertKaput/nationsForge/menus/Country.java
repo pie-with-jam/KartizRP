@@ -88,23 +88,26 @@ public class Country {
         }
 
         // Роль в государстве из database.json
-        String roleInState = "Безработный";  // Начальное значение "безработный"
         boolean hasState = false;
-        String stateName = "Ваше государство";
+        String roleInState = "Безработный";
+        String stateName = null;
 
         for (String key : database.keySet()) {
             JsonObject stateData = database.getAsJsonObject(key);
+
+            // Проверка, если игрок — лидер
             if (stateData.has("ruler") && stateData.get("ruler").getAsString().equals(playerName)) {
-                // Если игрок — лидер, присваиваем ему титул
                 roleInState = stateData.has("leaderTitle") ? stateData.get("leaderTitle").getAsString() : "Правитель";
                 hasState = true;
                 stateName = stateData.get("name").getAsString();
                 break;
-            } else if (stateData.has("members")) {
+            }
+            // Проверка, если игрок — член государства
+            else if (stateData.has("members") && stateData.get("members").isJsonArray()) {
                 JsonArray membersArray = stateData.getAsJsonArray("members");
                 for (JsonElement member : membersArray) {
                     if (member.getAsString().equals(playerName)) {
-                        // Если игрок — член государства
+                        roleInState = "Член";
                         hasState = true;
                         stateName = stateData.get("name").getAsString();
                         break;
@@ -112,6 +115,7 @@ public class Country {
                 }
             }
         }
+
 
         // Добавляем информацию о персонаже
         menu.addItem(14, Material.NAME_TAG, whiteColor + "Информация о вас",
@@ -150,7 +154,7 @@ public class Country {
             );
         }
         // Открываем меню для игрока
-            menu.addItem(31, Material.GRAY_STAINED_GLASS_PANE, whiteColor + "Домой",
+            menu.addItem(29, Material.GREEN_STAINED_GLASS_PANE, whiteColor + "Домой",
                     Arrays.asList(
                             beforeColor + "| Переместиться в главное меню сервера"
                     )
