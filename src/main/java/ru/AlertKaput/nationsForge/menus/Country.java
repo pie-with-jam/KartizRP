@@ -149,8 +149,12 @@ public class Country {
                     )
             );
         }
-
         // Открываем меню для игрока
+            menu.addItem(31, Material.GRAY_STAINED_GLASS_PANE, whiteColor + "Домой",
+                    Arrays.asList(
+                            beforeColor + "| Переместиться в главное меню сервера"
+                    )
+            );
         menu.open(player);
     }
 }
